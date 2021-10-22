@@ -1,13 +1,8 @@
-FROM node:lts-alpine as BUILD
-WORKDIR /usr/src/app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
- 
-FROM nginx:1.17
-COPY nginx-os4.conf /etc/nginx/nginx.conf
+# syntax=docker/dockerfile:1
+FROM python:3
+ENV PYTHONUNBUFFERED=1
 WORKDIR /code
-COPY --from=BUILD /usr/src/app/dist .
-EXPOSE 8080:8080
-CMD ["nginx", "-g", "daemon off;"]
+COPY requirements.txt /code/
+RUN pip install -r requirements.txt
+COPY . /code/
+
